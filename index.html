@@ -1,0 +1,172 @@
+<html>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <style>
+    html, body {
+      font-family: 'Open Sans', sans-serif;
+      padding: 0;
+      margin: 0;
+    }
+
+    .section__container {
+      background: #e3e3e3;
+      padding: 20px;
+      margin: 0 auto;
+      width: 700px;
+      height: 800px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .section {
+      height: 380px;
+      background: #fff;
+      border: 1px solid tomato;
+    }
+
+    .table, .table2 {
+      width: 100%;
+      border: 1px solid red;
+      border-collapse: collapse;
+    }
+
+    .table tr td {
+      padding: 0 30px;
+      height: 60px;
+      border: 1px solid #e3e3e3;
+    }
+
+    .tableMaster {
+        position: absolute;
+        opacity: 0;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+  </style>
+<body>
+
+  <table class="tableMaster js-table-src-top table">
+    <tr class="js-table-src-row">
+      <td>cell 1</td>
+      <td>cell 2</td>
+      <td>cell 3</td>
+    </tr>
+    <tr class="js-table-src-row">
+      <td>cell 1</td>
+      <td>cell 2</td>
+      <td>cell 3</td>
+    </tr>
+
+    <tr class="js-table-src-row">
+      <td>cell 1</td>
+      <td>cell 2</td>
+      <td>Ut tincidunt tincidunt erat. Etiam ultricies nisi vel augue. Nunc nonummy metus. Suspendisse non nisl sit amet velit hendrerit rutrum. Praesent venenatis metus at tortor pulvinar varius.
+
+Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci. Curabitur blandit mollis lacus. Cras id dui. Ut non enim eleifend felis pretium feugiat.</td>
+    </tr>
+        <tr class="js-table-src-row">
+      <td>cell zadnja 1</td>
+      <td>Ut tincidunt tincidunt erat. Etiam ultricies nisi vel augue. Nunc nonummy metus. Suspendisse non nisl sit amet velit hendrerit rutrum. Praesent venenatis metus at tortor pulvinar varius.
+
+Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci. Curabitur blandit mollis lacus. Cras id dui. Ut non enim eleifend felis pretium feugiat.</td>
+      <td>cell zadnja 3</td>
+    </tr>
+  </table>
+
+  <table class="tableMaster js-table-src-bottom table">
+    <tr class="js-table-src-row">
+      <td colspan="3">TABLE 2</td>
+    </tr>
+    <tr class="js-table-src-row">
+      <td>table 2 cell 1</td>
+      <td>table 2 cell 2</t2>
+      <td>table 2 cell 3</d3>
+    </tr>
+    <tr class="js-table-src-row">
+      <td>table 2 cell 1</td>
+      <td>table 2 cell 2</t2>
+      <td>table 2 cell 3</d3>
+    </tr><tr class="js-table-src-row">
+      <td>table 2 cell 1</td>
+      <td>table 2 cell 2</t2>
+      <td>table 2 cell 3</d3>
+    </tr>
+  </table>
+
+  <div class="section__container">
+    <div class="section section--top"></div>
+    <div class="section section--bottom"></div>
+  </div>
+  
+<script type="text/javascript">
+
+function injectTable1(top, bottom) {
+    const tableSrc = document.querySelector('.js-table-src-top');
+    let availableSpace;
+
+    const table = document.createElement('table');
+    table.classList.add('table', 'table--primary');
+    top.appendChild(table);
+
+    let table2 = document.createElement('table');
+    table2.classList.add('table');
+
+    const rowsSrc = tableSrc.querySelectorAll('.js-table-src-row');
+    rowsSrc.forEach(rowSrc => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = rowSrc.innerHTML;
+
+        availableSpace = top.offsetHeight - table.offsetHeight;
+        table.appendChild(row);
+        if ( availableSpace < row.offsetHeight || top.classList.contains('full') ) {
+            top.classList.add('full');
+            row.remove();
+
+            if ( bottom.querySelector('.table') == null ) bottom.appendChild(table2);
+            table2.appendChild(row);
+        }
+    });
+}
+
+function injectTable2(top, bottom) {
+    const tableSrc = document.querySelector('.js-table-src-bottom');
+    let availableSpace;
+    const topTableHeight = document.querySelector('.table--primary').offsetHeight;
+
+    const table = document.createElement('table');
+    table.classList.add('table', 'table--secondary');
+    top.appendChild(table);
+
+    let table2 = document.createElement('table');
+    table2.classList.add('table');
+    bottom.appendChild(table2);
+
+    const rowsSrc = [...tableSrc.querySelectorAll('.js-table-src-row')];
+    rowsSrc.forEach(rowSrc => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = rowSrc.innerHTML;
+    });
+}
+
+function resetTables(top, bottom) {
+    top.innerHTML = '';
+    top.classList.remove('full');
+    bottom.innerHTML = '';
+}
+
+function injectController() {
+    const sectionTop = document.querySelector('.section--top');
+    const sectionBottom = document.querySelector('.section--bottom');
+
+    resetTables(sectionTop, sectionBottom);
+    injectTable1(sectionTop, sectionBottom);
+    // injectTable2(sectionTop, sectionBottom);
+}
+
+injectController();
+</script>
+</body>
+</html>
