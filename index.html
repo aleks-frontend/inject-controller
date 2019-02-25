@@ -62,16 +62,8 @@
       <td>cell 1</td>
       <td>cell 2</td>
       <td>Ut tincidunt tincidunt erat. Etiam ultricies nisi vel augue. Nunc nonummy metus. Suspendisse non nisl sit amet velit hendrerit rutrum. Praesent venenatis metus at tortor pulvinar varius.
-
-Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci. Curabitur blandit mollis lacus. Cras id dui. Ut non enim eleifend felis pretium feugiat.</td>
-    </tr>
-        <tr class="js-table-src-row">
-      <td>cell zadnja 1</td>
-      <td>Ut tincidunt tincidunt erat. Etiam ultricies nisi vel augue. Nunc nonummy metus. Suspendisse non nisl sit amet velit hendrerit rutrum. Praesent venenatis metus at tortor pulvinar varius.
-
-Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci. Curabitur blandit mollis lacus. Cras id dui. Ut non enim eleifend felis pretium feugiat.</td>
-      <td>cell zadnja 3</td>
-    </tr>
+</td>
+  </tr>
   </table>
 
   <table class="tableMaster js-table-src-bottom table">
@@ -143,11 +135,21 @@ function injectTable2(top, bottom) {
     table2.classList.add('table');
     bottom.appendChild(table2);
 
-    const rowsSrc = [...tableSrc.querySelectorAll('.js-table-src-row')];
+    const rowsSrc = tableSrc.querySelectorAll('.js-table-src-row');
     rowsSrc.forEach(rowSrc => {
         const row = document.createElement('tr');
 
         row.innerHTML = rowSrc.innerHTML;
+
+        availableSpace = top.offsetHeight - table.offsetHeight - topTableHeight;
+        table.appendChild(row);
+        if ( availableSpace < row.offsetHeight || top.classList.contains('full') ) {
+            top.classList.add('full');
+            row.remove();
+
+            if ( bottom.querySelector('.table') == null ) bottom.appendChild(table2);
+            table2.appendChild(row);
+        }
     });
 }
 
@@ -163,7 +165,7 @@ function injectController() {
 
     resetTables(sectionTop, sectionBottom);
     injectTable1(sectionTop, sectionBottom);
-    // injectTable2(sectionTop, sectionBottom);
+    injectTable2(sectionTop, sectionBottom);
 }
 
 injectController();
