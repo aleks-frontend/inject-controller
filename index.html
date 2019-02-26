@@ -68,7 +68,7 @@
 
   <table class="tableMaster js-table-src-bottom table">
     <tr class="js-table-src-row">
-      <td colspan="3">TABLE 2</td>
+      <td colspan="3">TABLE 2 At the end of the morning, you will be taken by Student Guides to your School area for lunch and the afternoon activities.At the end of the morning, you will be taken by Student Guides to </td>
     </tr>
     <tr class="js-table-src-row">
       <td>table 2 cell 1</td>
@@ -93,82 +93,88 @@
   
 <script type="text/javascript">
 
-function injectTable1(top, bottom) {
-    const tableSrc = document.querySelector('.js-table-src-top');
+function InjectController() {
+    this.tableSrcTop = document.querySelector('.js-table-src-top');
+    this.tableSrcBottom = document.querySelector('.js-table-src-bottom');
+    this.sectionTop = document.querySelector('.section--top');
+    this.sectionBottom = document.querySelector('.section--bottom');
+}
+
+InjectController.inject = function() {
+    const injectInstance = new InjectController();
+    injectInstance.resetTables();
+    injectInstance.injectTable1();
+    injectInstance.injectTable2();
+};
+
+InjectController.prototype.injectTable1 = function() {
     let availableSpace;
+    const self = this;
 
     const table = document.createElement('table');
     table.classList.add('table', 'table--primary');
-    top.appendChild(table);
+    this.sectionTop.appendChild(table);
 
     let table2 = document.createElement('table');
     table2.classList.add('table');
 
-    const rowsSrc = tableSrc.querySelectorAll('.js-table-src-row');
+    const rowsSrc = this.tableSrcTop.querySelectorAll('.js-table-src-row');
     rowsSrc.forEach(rowSrc => {
         const row = document.createElement('tr');
 
         row.innerHTML = rowSrc.innerHTML;
 
-        availableSpace = top.offsetHeight - table.offsetHeight;
+        availableSpace = self.sectionTop.offsetHeight - table.offsetHeight;
         table.appendChild(row);
-        if ( availableSpace < row.offsetHeight || top.classList.contains('full') ) {
-            top.classList.add('full');
+        if ( availableSpace < row.offsetHeight || self.sectionTop.classList.contains('full') ) {
+            self.sectionTop.classList.add('full');
             row.remove();
 
-            if ( bottom.querySelector('.table') == null ) bottom.appendChild(table2);
+            if ( self.sectionBottom.querySelector('.table') == null ) self.sectionBottom.appendChild(table2);
             table2.appendChild(row);
         }
     });
-}
+};
 
-function injectTable2(top, bottom) {
-    const tableSrc = document.querySelector('.js-table-src-bottom');
+InjectController.prototype.injectTable2 = function() {
     let availableSpace;
     const topTableHeight = document.querySelector('.table--primary').offsetHeight;
+    const self = this;
 
     const table = document.createElement('table');
     table.classList.add('table', 'table--secondary');
-    top.appendChild(table);
+    self.sectionTop.appendChild(table);
 
     let table2 = document.createElement('table');
     table2.classList.add('table');
-    bottom.appendChild(table2);
+    self.sectionBottom.appendChild(table2);
 
-    const rowsSrc = tableSrc.querySelectorAll('.js-table-src-row');
+    const rowsSrc = this.tableSrcBottom.querySelectorAll('.js-table-src-row');
     rowsSrc.forEach(rowSrc => {
         const row = document.createElement('tr');
 
         row.innerHTML = rowSrc.innerHTML;
 
-        availableSpace = top.offsetHeight - table.offsetHeight - topTableHeight;
+        availableSpace = self.sectionTop.offsetHeight - table.offsetHeight - topTableHeight;
         table.appendChild(row);
-        if ( availableSpace < row.offsetHeight || top.classList.contains('full') ) {
-            top.classList.add('full');
+        if ( availableSpace < row.offsetHeight || self.sectionTop.classList.contains('full') ) {
+            self.sectionTop.classList.add('full');
             row.remove();
 
-            if ( bottom.querySelector('.table') == null ) bottom.appendChild(table2);
+            if ( self.sectionBottom.querySelector('.table') == null ) self.sectionBottom.appendChild(table2);
             table2.appendChild(row);
         }
     });
-}
+};
 
-function resetTables(top, bottom) {
-    top.innerHTML = '';
-    top.classList.remove('full');
-    bottom.innerHTML = '';
-}
+InjectController.prototype.resetTables = function() {
+    this.sectionTop.innerHTML = '';
+    this.sectionTop.classList.remove('full');
+    this.sectionBottom.innerHTML = '';
+};
 
-function injectController() {
-    const sectionTop = document.querySelector('.section--top');
-    const sectionBottom = document.querySelector('.section--bottom');
+InjectController.inject();
 
-    resetTables(sectionTop, sectionBottom);
-    injectTable1(sectionTop, sectionBottom);
-    injectTable2(sectionTop, sectionBottom);
-}
-
-injectController();
 </script>
 </body>
 </html>
